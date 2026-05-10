@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./php
+    container_name: php_app
+    volumes:
+      - ./php:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - appnet
+    ports:
+      - "8080:80"
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: adatok
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass
+    ports:
+      - "7260:3306"
+    networks:
+      - appnet
+    volumes:
+      - ./php/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  appnet:
